@@ -4,4 +4,14 @@ http:
       rule: Host(`proxy.{{ env "APP_DOMAIN" }}`)
       service: api@internal
 
+    to-webserver:
+      entryPoints:
+        - "web"
+      rule: "Host(`core.{{ env "APP_DOMAIN" }}`)"
+      service: webserver
+
   services:
+    webserver:
+      loadBalancer:
+        servers:
+          - url: http://webserver

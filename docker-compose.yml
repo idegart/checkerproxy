@@ -7,7 +7,24 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./proxy/traefik.yml:/etc/traefik/traefik.yml
-      - ./proxy/conf:/etc/traefik/conf
+      - ./proxy/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./proxy/conf:/etc/traefik/conf:ro
     environment:
       APP_DOMAIN: "${APP_DOMAIN}"
+
+  webserver:
+    image: nginx:alpine
+    environment:
+      CORE_DOMAIN: "core:9000"
+      CORE_ROOT_PATH: "/var/www/public"
+    volumes:
+      - ./webserver/templates:/etc/nginx/templates:ro
+      - ./core:/var/www:ro
+
+  core:
+    build:
+      context: ./core
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ./core:/var/www
+    working_dir: /var/www
