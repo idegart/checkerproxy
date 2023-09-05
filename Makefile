@@ -9,3 +9,6 @@ webserver.sh:
 
 core.sh:
 	@docker-compose exec core /bin/sh
+
+webapp.sh:
+	@docker-compose exec webapp /bin/sh

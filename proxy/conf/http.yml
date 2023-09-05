@@ -10,8 +10,19 @@ http:
       rule: "Host(`core.{{ env "APP_DOMAIN" }}`)"
       service: webserver
 
+    to-webapp:
+      entryPoints:
+        - "web"
+      rule: "Host(`{{ env "APP_DOMAIN" }}`)"
+      service: webapp
+
   services:
     webserver:
       loadBalancer:
         servers:
           - url: http://webserver
+
+    webapp:
+      loadBalancer:
+        servers:
+          - url: http://webapp:5173
