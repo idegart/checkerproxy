@@ -3,7 +3,6 @@
 namespace Tests\Feature\Http\V1;
 
 use App\Jobs\ProcessProxy;
-use App\Jobs\ProcessReport;
 use App\Models\Proxy;
 use App\Models\Report;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -71,6 +70,26 @@ class ReportControllerTest extends TestCase
         });
     }
 
+    public function test_it_can_show_report(): void
+    {
+        $report = Report::factory()
+            ->has(Proxy::factory()->count(10))
+            ->create();
+
+        $this->getJson('/api/v1/reports/' . $report->getUID())
+            ->assertSuccessful()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json
+                    ->has('report', fn(AssertableJson $json) => $json
+                        ->count('relations.proxies', 10)
+                        ->etc()
+                    )
+                    ->etc()
+                )
+                ->etc()
+            );
+    }
+
     public static function badProxiesProvider(): array
     {
         return [
@@ -79,6 +98,9 @@ class ReportControllerTest extends TestCase
             ],
             [
                 ['692.248.222.879:43780'],
+            ],
+            [
+                ['192.168.1.1:27052', '192.168.1.1:27052'],
             ],
             [
                 ['192.168.1.1:27052', '692.83.47.579:43780'],

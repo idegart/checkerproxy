@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Actions\Report\ShowAction;
 use App\Actions\Report\StoreAction;
-use App\Http\Requests\API\V1\Report\ShowRequest;
 use App\Http\Requests\API\V1\Report\StoreRequest;
+use App\Http\Resources\Api\V1\ReportResource;
 use App\Http\Response\AppResponse;
 use App\Http\Response\AwareAppResponseFactory;
 use App\Http\Response\HasAppResponseFactoryInterface;
+use App\Models\Report;
 
 class ReportController implements HasAppResponseFactoryInterface
 {
@@ -19,11 +19,14 @@ class ReportController implements HasAppResponseFactoryInterface
         $report = $action(proxies: $request->getProxies());
 
         return $this->appResponseFactory->makeSuccess([
-            'report' => $report->getUID(),
+            'report' => ReportResource::make($report->load('proxies')),
         ]);
     }
 
-    public function show(ShowRequest $request, ShowAction $action): AppResponse
+    public function show(Report $report): AppResponse
     {
+        return $this->appResponseFactory->makeSuccess([
+            'report' => ReportResource::make($report->load('proxies'))
+        ]);
     }
 }

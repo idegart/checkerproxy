@@ -21,6 +21,7 @@ class StoreRequest extends FormRequest
             'proxies.*' => [
                 'required',
                 'string',
+                'distinct',
                 'regex:/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b:\d{2,5}/'
             ],
         ];
@@ -34,7 +35,8 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'regex' => 'Not a valid proxy'
+            'regex' => 'Not a valid proxy',
+            'distinct' => 'Only unique proxies available',
         ];
     }
 }
