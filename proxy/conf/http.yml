@@ -1,0 +1,7 @@
+http:
+  routers:
+    to-dashboard:
+      rule: Host(`proxy.{{ env "APP_DOMAIN" }}`)
+      service: api@internal
+
+  services:
