@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\V1;
 
+use App\Jobs\ProcessProxy;
 use App\Jobs\ProcessReport;
 use App\Models\Proxy;
 use App\Models\Report;
@@ -49,13 +50,12 @@ class ReportControllerTest extends TestCase
             ->assertJson(fn(AssertableJson $json) => $json
                 ->has('data', fn(AssertableJson $json) => $json
                     ->has('report')
-                    ->has('proxies', fn(AssertableJson $json) => $json->count(2)->etc())
                 )
                 ->etc()
             );
 
         $this->assertDatabaseHas(Report::class, [
-            'uid' => $uid = $response->json('data.report'),
+            'uid' => $response->json('data.report'),
         ]);
 
         foreach ($ips as $ip) {
@@ -64,8 +64,10 @@ class ReportControllerTest extends TestCase
             ]);
         }
 
-        Queue::assertPushed(ProcessReport::class, function (ProcessReport $job, string $queue) use ($uid) {
-            return $job->reportUID === $uid;
+        Queue::assertPushed(ProcessProxy::class, count($ips));
+
+        Queue::assertPushed(ProcessProxy::class, function (ProcessProxy $job, string $queue) use ($ips) {
+            return in_array($job->proxy->ip_address, $ips);
         });
     }
 

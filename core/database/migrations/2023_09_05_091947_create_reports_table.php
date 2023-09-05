@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->ulid('uid')->unique();
             $table->timestamps();
+            $table->timestamp('completed_at')->nullable();
         });
     }
 

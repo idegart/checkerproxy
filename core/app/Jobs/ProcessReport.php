@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Proxy;
 use App\Repositories\ReportRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Bus\Dispatcher;
@@ -26,7 +25,6 @@ class ProcessReport implements ShouldQueue
     {
         $report = $reportRepository->findByUID($this->reportUID, ['proxies']);
 
-        /** @var Proxy $proxy */
         foreach ($report->proxies as $proxy) {
             $dispatcher->dispatch(new ProcessProxy(
                 reportUID: $this->reportUID,

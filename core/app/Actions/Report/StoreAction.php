@@ -2,29 +2,28 @@
 
 namespace App\Actions\Report;
 
+use App\Jobs\ProcessProxy;
+use App\Models\Proxy;
 use App\Models\Report;
-use App\Repositories\ProxyRepository;
-use App\Repositories\ReportRepository;
 
 class StoreAction
 {
-    public function __construct(
-        private readonly ReportRepository $reportRepository,
-        private readonly ProxyRepository $proxyRepository,
-    )
-    {
-    }
-
     public function __invoke(
         array $proxies
     ): Report
     {
-        $proxiesIds = [];
+        $report = new Report();
+        $report->save();
 
         foreach ($proxies as $ipAddress) {
-            $proxiesIds[] = $this->proxyRepository->createOrFirst($ipAddress)->getKey();
+            $proxy = new Proxy();
+            $proxy->report()->associate($report);
+            $proxy->ip_address = $ipAddress;
+            $proxy->save();
+
+            dispatch(new ProcessProxy($proxy));
         }
 
-        return $this->reportRepository->create($proxiesIds);
+        return $report;
     }
 }

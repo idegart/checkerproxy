@@ -10,9 +10,15 @@ return new class extends Migration
     {
         Schema::create('proxies', function (Blueprint $table) {
             $table->id();
-            $table->ulid('uid')->unique();
+            $table->foreignId('report_id')->constrained();
             $table->ipAddress();
+            $table->string('protocol')->nullable();
+            $table->string('country')->nullable();
+            $table->string('speed')->nullable();
             $table->timestamps();
+            $table->timestamp('completed_at')->nullable();
+
+            $table->unique(['report_id', 'ip_address']);
         });
     }
 
