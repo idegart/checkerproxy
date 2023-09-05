@@ -24,6 +24,14 @@ class Api {
 
         return report
     }
+
+    async create(params) {
+        let {data} = await apiInstance.post('/api/v1/reports', params)
+
+        console.log({data})
+
+        return new Report(data['data']['report']['uid'], '')
+    }
 }
 
 const api = new Api()

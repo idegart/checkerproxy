@@ -6,6 +6,10 @@ export default <RouteConfig[]>[
         component: () => import('../views/HistoryView.vue'),
     },
     {
+        path: '/create',
+        component: () => import('../views/CreateView.vue'),
+    },
+    {
         path: '/report/:id',
         name: 'report',
         component: () => import('../views/ReportView.vue'),
