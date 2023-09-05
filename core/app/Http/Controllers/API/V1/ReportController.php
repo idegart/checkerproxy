@@ -9,10 +9,18 @@ use App\Http\Response\AppResponse;
 use App\Http\Response\AwareAppResponseFactory;
 use App\Http\Response\HasAppResponseFactoryInterface;
 use App\Models\Report;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ReportController implements HasAppResponseFactoryInterface
 {
     use AwareAppResponseFactory;
+
+    public function index(): JsonResource
+    {
+        return ReportResource::collection(
+            Report::query()->cursorPaginate()
+        );
+    }
 
     public function store(StoreRequest $request, StoreAction $action): AppResponse
     {

@@ -18,6 +18,17 @@ class ReportControllerTest extends TestCase
     use DatabaseMigrations;
     use WithFaker;
 
+    public function test_it_can_show_reports(): void
+    {
+        $reports = Report::factory()
+            ->has(Proxy::factory()->count(10))
+            ->count(20)
+            ->create();
+
+        $this->getJson('/api/v1/reports')
+            ->dd();
+    }
+
     public function test_it_can_not_store_new_report_with_no_proxies(): void
     {
         $this->postJson('/api/v1/reports')

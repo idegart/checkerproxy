@@ -12,6 +12,7 @@ class V1Routing implements MapRoutingInterface
         Route::name('reports:')
             ->prefix('reports')
             ->group(function () {
+                Route::name('index')->get('', [ReportController::class, 'index']);
                 Route::name('store')->post('', [ReportController::class, 'store']);
                 Route::name('show')->get('{report:uid}', [ReportController::class, 'show']);
             });
